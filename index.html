@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍁 10月の習慣チャレンジ 2026</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+    background: linear-gradient(160deg, #fdf3e3 0%, #fce8c8 30%, #f8d5a0 60%, #f5c878 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    color: #3b1a00;
+    overflow-x: hidden;
+  }
+
+  /* 背景の落ち葉アニメーション */
+  .leaves-bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .leaf {
+    position: absolute;
+    top: -60px;
+    font-size: 24px;
+    animation: fall linear infinite;
+    opacity: 0.7;
+  }
+
+  @keyframes fall {
+    0%   { transform: translateY(0) rotate(0deg) translateX(0); opacity: 0.7; }
+    50%  { transform: translateY(50vh) rotate(180deg) translateX(30px); }
+    100% { transform: translateY(105vh) rotate(360deg) translateX(-20px); opacity: 0.2; }
+  }
+
+  .main-wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px 16px 60px;
+  }
+
+  /* ヘッダー */
+  .header {
+    text-align: center;
+    padding: 28px 20px 20px;
+    background: linear-gradient(135deg, #8B1A00 0%, #C0392B 30%, #E67E22 60%, #F39C12 100%);
+    border-radius: 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 6px 24px rgba(139,26,0,0.5);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::before {
+    content: '🍁🍂🍁🍂🍁🍂🍁🍂🍁🍂🍁';
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px;
+    white-space: nowrap;
+    opacity: 0.5;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+    color: #fff8e1;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.4);
+    margin-top: 10px;
+  }
+
+  .header p {
+    color: #ffe0b2;
+    font-size: 0.95rem;
+    margin-top: 6px;
+  }
+
+  /* 達成率サマリー */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .summary-card {
+    background: linear-gradient(160deg, #fff8f0, #ffe5c8);
+    border: 2px solid #e67e22;
+    border-radius: 16px;
+    padding: 14px 18px;
+    box-shadow: 0 4px 12px rgba(230,126,34,0.2);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .summary-card .icon { font-size: 2rem; flex-shrink: 0; }
+
+  .summary-card .card-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .summary-card .label {
+    font-size: 0.85rem;
+    color: #7d4a00;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .summary-card .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .progress-bar-wrap {
+    flex: 1;
+    background: #f5cba7;
+    border-radius: 10px;
+    height: 14px;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #e74c3c, #e67e22);
+    transition: width 0.6s ease;
+  }
+
+  .summary-card .rate {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #c0392b;
+    flex-shrink: 0;
+    min-width: 58px;
+    text-align: right;
+  }
+
+  .summary-card .day-count {
+    font-size: 0.72rem;
+    color: #a04000;
+    margin-top: 3px;
+  }
+
+  /* カレンダーセクション */
+  .habit-section {
+    background: linear-gradient(160deg, #fff8f0, #fdebd0);
+    border: 2px solid #e59866;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 16px rgba(200,80,0,0.12);
+  }
+
+  .habit-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: #7d2d00;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 2px dashed #e59866;
+  }
+
+  .habit-title .habit-icon { font-size: 1.6rem; }
+
+  /* カレンダーグリッド */
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+  }
+
+  .cal-header {
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #a04000;
+    padding: 4px 0;
+  }
+  .cal-header.sun { color: #c0392b; }
+  .cal-header.sat { color: #2980b9; }
+
+  .day-cell {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    cursor: pointer;
+    background: #fff;
+    border: 1.5px solid #f0c070;
+    transition: all 0.18s;
+    position: relative;
+    user-select: none;
+    min-height: 44px;
+  }
+
+  .day-cell:hover:not(.empty):not(.future) {
+    background: #fde8c0;
+    transform: scale(1.08);
+    border-color: #e67e22;
+    z-index: 2;
+  }
+
+  .day-cell.empty { background: transparent; border-color: transparent; cursor: default; }
+  .day-cell.future { opacity: 0.4; cursor: not-allowed; }
+
+  .day-cell.done {
+    background: linear-gradient(135deg, #fff3cd, #ffe08a);
+    border-color: #f39c12;
+  }
+
+  .day-num {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #5a2d00;
+    line-height: 1;
+  }
+
+  .day-cell.sun .day-num { color: #c0392b; }
+  .day-cell.sat .day-num { color: #2980b9; }
+
+  .stamp {
+    font-size: 1.2rem;
+    line-height: 1;
+    margin-top: 2px;
+    animation: stampPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes stampPop {
+    0%   { transform: scale(0) rotate(-15deg); opacity: 0; }
+    60%  { transform: scale(1.3) rotate(5deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  /* today強調 */
+  .day-cell.today {
+    border: 2px solid #e74c3c;
+    box-shadow: 0 0 0 3px rgba(231,76,60,0.25);
+  }
+
+  /* スタンプ演出オーバーレイ */
+  .stamp-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  .stamp-big {
+    font-size: 7rem;
+    animation: bigStamp 0.8s ease forwards;
+    opacity: 0;
+  }
+
+  @keyframes bigStamp {
+    0%   { transform: scale(3) rotate(-20deg); opacity: 0; }
+    30%  { transform: scale(0.9) rotate(3deg);  opacity: 1; }
+    60%  { transform: scale(1.05) rotate(-1deg); opacity: 1; }
+    80%  { opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 0; }
+  }
+
+  .bravo-text {
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2rem;
+    font-weight: 900;
+    color: #c0392b;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+    animation: bravoAnim 1.2s ease forwards;
+    opacity: 0;
+    z-index: 998;
+    white-space: nowrap;
+  }
+
+  @keyframes bravoAnim {
+    0%   { opacity: 0; transform: translateX(-50%) translateY(20px) scale(0.8); }
+    20%  { opacity: 1; transform: translateX(-50%) translateY(0) scale(1.1); }
+    70%  { opacity: 1; }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-30px) scale(1); }
+  }
+
+  /* フッター */
+  footer {
+    text-align: center;
+    margin-top: 32px;
+    color: #8a5c20;
+    font-size: 0.78rem;
+    border-top: 1px solid #d4935a;
+    padding-top: 16px;
+  }
+
+  @media (max-width: 600px) {
+    .summary-grid { grid-template-columns: 1fr; }
+    .header h1 { font-size: 1.5rem; }
+    .day-cell { min-height: 36px; }
+    .stamp { font-size: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 落ち葉アニメーション背景 -->
+<div class="leaves-bg" id="leavesBg"></div>
+
+<div class="main-wrapper">
+
+  <div class="header">
+    <h1>🍁 10月の習慣チャレンジ</h1>
+    <p>2026年10月1日 〜 10月31日（31日間）</p>
+  </div>
+
+  <!-- 達成率サマリー -->
+  <div class="summary-grid" id="summaryGrid">
+    <!-- JS で生成 -->
+  </div>
+
+  <!-- 習慣カレンダー -->
+  <div id="habitSections"></div>
+
+</div>
+
+<!-- スタンプ演出 -->
+<div class="stamp-overlay" id="stampOverlay" style="display:none;">
+  <div class="stamp-big" id="stampBig">🌟</div>
+</div>
+<div class="bravo-text" id="bravoText" style="display:none;">よくできました！</div>
+
+<script>
+// ===== 設定 =====
+const HABITS = [
+  { id: 'wheat', label: '小麦粉を食べない', icon: '🚫🌾', stampEmoji: '⭐', color: '#8B1A00' },
+  { id: 'wake',  label: '7時台に起きる',   icon: '⏰',    stampEmoji: '🌅', color: '#C0392B' },
+  { id: 'steps', label: '1日8000歩',       icon: '👟',    stampEmoji: '🍁', color: '#D35400' },
+];
+
+const YEAR = 2026;
+const MONTH = 9; // 0-based: September=8, October=9
+const DAYS_IN_MONTH = 31;
+const TODAY = new Date();
+
+// ===== データ管理 (localStorage) =====
+const STORAGE_KEY = 'habit_tracker_oct2026';
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch(e) { return {}; }
+}
+
+function saveData(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function toggleDay(habitId, day) {
+  const data = loadData();
+  if (!data[habitId]) data[habitId] = {};
+  if (data[habitId][day]) {
+    delete data[habitId][day];
+    saveData(data);
+    renderAll();
+  } else {
+    data[habitId][day] = true;
+    saveData(data);
+    showStamp();
+    renderAll();
+  }
+}
+
+function getDoneCount(habitId) {
+  const data = loadData();
+  if (!data[habitId]) return 0;
+  return Object.keys(data[habitId]).length;
+}
+
+function isDone(habitId, day) {
+  const data = loadData();
+  return !!(data[habitId] && data[habitId][day]);
+}
+
+// ===== 日付ユーティリティ =====
+// 2026年10月はまだ未来のため、全日タップ可能にする（試用モード）
+function isFuture(day) {
+  return false;
+}
+
+function isToday(day) {
+  // 現在が2026年10月ならリアル当日を、それ以外はアプリ起動日を1日として今日扱いにしない
+  if (TODAY.getFullYear() === YEAR && TODAY.getMonth() === MONTH) {
+    return TODAY.getDate() === day;
+  }
+  return false;
+}
+
+// 10月1日は何曜日？ (0=Sun)
+function getFirstDayOfWeek() {
+  return new Date(YEAR, MONTH, 1).getDay();
+}
+
+// ===== スタンプ演出 =====
+function showStamp() {
+  const overlay = document.getElementById('stampOverlay');
+  const big = document.getElementById('stampBig');
+  const bravo = document.getElementById('bravoText');
+
+  const emojis = ['⭐','🌟','🍁','🌸','✨','🎉','🏆'];
+  big.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+
+  overlay.style.display = 'flex';
+  bravo.style.display = 'block';
+
+  // アニメーション再起動
+  big.style.animation = 'none';
+  bravo.style.animation = 'none';
+  void big.offsetWidth;
+  void bravo.offsetWidth;
+  big.style.animation = '';
+  bravo.style.animation = '';
+
+  setTimeout(() => {
+    overlay.style.display = 'none';
+    bravo.style.display = 'none';
+  }, 1300);
+}
+
+// ===== レンダリング =====
+function renderSummary() {
+  const grid = document.getElementById('summaryGrid');
+  grid.innerHTML = '';
+
+  HABITS.forEach(habit => {
+    const done = getDoneCount(habit.id);
+    const total = DAYS_IN_MONTH;
+    const rate = Math.round((done / total) * 100);
+
+    const card = document.createElement('div');
+    card.className = 'summary-card';
+    card.innerHTML = `
+      <div class="icon">${habit.icon}</div>
+      <div class="card-body">
+        <div class="label">${habit.label}</div>
+        <div class="bar-row">
+          <div class="progress-bar-wrap">
+            <div class="progress-bar" style="width:${rate}%"></div>
+          </div>
+          <div class="rate">${rate}%</div>
+        </div>
+        <div class="day-count">${done} / ${total} 日達成</div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function renderCalendar(habit) {
+  const firstDay = getFirstDayOfWeek();
+  const days = ['日','月','火','水','木','金','土'];
+
+  let html = '<div class="calendar-grid">';
+
+  // 曜日ヘッダー
+  days.forEach((d, i) => {
+    const cls = i === 0 ? 'sun' : i === 6 ? 'sat' : '';
+    html += `<div class="cal-header ${cls}">${d}</div>`;
+  });
+
+  // 空白マス
+  for (let i = 0; i < firstDay; i++) {
+    html += `<div class="day-cell empty"></div>`;
+  }
+
+  // 日付マス
+  for (let day = 1; day <= DAYS_IN_MONTH; day++) {
+    const dayOfWeek = (firstDay + day - 1) % 7;
+    const future = isFuture(day);
+    const today = isToday(day);
+    const done = isDone(habit.id, day);
+
+    const sunCls  = dayOfWeek === 0 ? ' sun' : '';
+    const satCls  = dayOfWeek === 6 ? ' sat' : '';
+    const futureCls = future ? ' future' : '';
+    const todayCls  = today  ? ' today'  : '';
+    const doneCls   = done   ? ' done'   : '';
+
+    const stamp = done ? `<span class="stamp">${habit.stampEmoji}</span>` : '';
+
+    html += `<div class="day-cell${sunCls}${satCls}${futureCls}${todayCls}${doneCls}"
+      onclick="handleClick('${habit.id}', ${day}, ${future})"
+    >
+      <span class="day-num">${day}</span>
+      ${stamp}
+    </div>`;
+  }
+
+  html += '</div>';
+  return html;
+}
+
+function renderHabits() {
+  const container = document.getElementById('habitSections');
+  container.innerHTML = '';
+
+  HABITS.forEach(habit => {
+    const done = getDoneCount(habit.id);
+    const rate = Math.round((done / DAYS_IN_MONTH) * 100);
+
+    const section = document.createElement('div');
+    section.className = 'habit-section';
+    section.innerHTML = `
+      <div class="habit-title">
+        <span class="habit-icon">${habit.icon}</span>
+        <span>${habit.label}</span>
+        <span style="margin-left:auto;font-size:0.85rem;color:#c0392b;font-weight:bold;">
+          達成率 ${rate}%（${done}日）
+        </span>
+      </div>
+      ${renderCalendar(habit)}
+    `;
+    container.appendChild(section);
+  });
+}
+
+function renderAll() {
+  renderSummary();
+  renderHabits();
+}
+
+// ===== クリックハンドラ =====
+function handleClick(habitId, day, future) {
+  if (future) return;
+  toggleDay(habitId, day);
+}
+
+// ===== 落ち葉生成 =====
+function createLeaves() {
+  const bg = document.getElementById('leavesBg');
+  const leafEmojis = ['🍁','🍂','🍃','🌿'];
+  for (let i = 0; i < 18; i++) {
+    const leaf = document.createElement('div');
+    leaf.className = 'leaf';
+    leaf.textContent = leafEmojis[Math.floor(Math.random() * leafEmojis.length)];
+    leaf.style.left = Math.random() * 100 + 'vw';
+    leaf.style.animationDuration = (6 + Math.random() * 8) + 's';
+    leaf.style.animationDelay = (Math.random() * 10) + 's';
+    leaf.style.fontSize = (16 + Math.random() * 16) + 'px';
+    bg.appendChild(leaf);
+  }
+}
+
+// ===== 初期化 =====
+createLeaves();
+renderAll();
+</script>
+
+<footer>
+  <p>🍁 2026年10月 習慣チャレンジトラッカー — 毎日タップしてスタンプを押そう！</p>
+  <p style="margin-top:6px;color:#9a7050;font-size:0.72rem;">データはこのブラウザに保存されます</p>
+  <p style="margin-top:16px;color:#9a7050;font-size:0.72rem;border-top:1px solid #5a3010;padding-top:12px;">Made with IBM Bob</p>
+</footer>
+
+</body>
+</html>
